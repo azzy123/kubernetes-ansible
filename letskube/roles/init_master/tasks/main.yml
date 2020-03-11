@@ -1,0 +1,42 @@
+- name: reset kubeadm
+  shell: kubeadm reset
+  become: yes
+
+- name: copy kubeadm.conf
+  template:
+    src: templates/kubeadm.conf.j2
+    dest: ./kubeadm.conf
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+
+- name: init kubeadm
+  shell: kubeadm init --config kubeadm.conf
+  register: kubetoken
+  become: yes
+
+- name: Save token "{{ kubetoken.stdout_lines[-1].strip() }}"
+  local_action: copy content="{{ kubetoken.stdout_lines[-1].strip() }}" dest=./kubetoken
+
+- name: Create directory $HOME/.kube
+  shell: mkdir -p $HOME/.kube
+
+- name: Delete old files for kubectl
+  shell: rm -rf $HOME/.kube/*
+
+- name: Get id user
+  shell: echo "`id -u`:`id -g`"
+  register: idusergroup
+
+- name: Get home directory for user
+  shell: echo $HOME
+  register: homeuser
+
+- name: Copy cert for kubectl
+  shell: cp -i /etc/kubernetes/admin.conf {{ homeuser.stdout_lines[0] }}/.kube/config
+  become: yes
+
+- name: Chown for cert
+  shell: chown {{ idusergroup.stdout_lines[0] }} {{ homeuser.stdout_lines[0] }}/.kube/config
+  become: yes

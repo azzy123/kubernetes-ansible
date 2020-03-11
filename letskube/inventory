@@ -1,0 +1,12 @@
+[all]
+m1.train  ansible_user=centos ansible_host=10.0.2.2 ansible_port=22
+s1.train  ansible_user=centos ansible_host=10.0.2.3 ansible_port=22
+
+[masters]
+m1.train
+
+[slaves]
+s1.train
+
+[kubectl]
+m1.train

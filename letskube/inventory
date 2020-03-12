@@ -1,6 +1,6 @@
 [all]
-m1.train  ansible_user=mluser ansible_host=10.0.2.9 ansible_port=22 ansible_become=true
-s1.train  ansible_user=mluser ansible_host=10.0.2.10 ansible_port=22 ansible_become=true
+m1.train  ansible_user=mluser ansible_host=10.0.2.9 ansible_port=22
+s1.train  ansible_user=mluser ansible_host=10.0.2.10 ansible_port=22
 
 [masters]
 m1.train
